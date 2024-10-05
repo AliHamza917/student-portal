@@ -11,6 +11,7 @@ var corsOptions = {
     origin: [
         "http://localhost:3000",
         // "https://meta-blog-project-with-backend.vercel.app",
+        "https://student-portal-khaki.vercel.app/"
     ],
     method: "GET , POST , PUT , DELETE , PATCH , HEAD",
     credentials: true,
