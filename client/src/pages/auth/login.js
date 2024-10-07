@@ -8,7 +8,7 @@ const Login = () => {
     const [inputs, setInputs] = useState({});
     const [loading, setLoading] = useState(false);
     const location = useLocation();
-    const [cookies, setCookie] = useCookies(['Token']);
+    const [cookies, setCookie] = useCookies(['Token', 'ID' , 'Username']);
     const navigate = useNavigate();
 
     const handleChange = (event) => {
@@ -18,8 +18,6 @@ const Login = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log(inputs);
-
         setLoading(true);
         try {
             const response = await axios.post("http://localhost:8000/api/auth/login-user", inputs, {
@@ -27,12 +25,12 @@ const Login = () => {
             });
             toast.success("User Login Successfully");
             setCookie('Token', response.data.token, { path: '/' });
+            setCookie('ID', response.data.id, { path: '/' });
+            setCookie('Username', response.data.username, { path: '/' });
             navigate('/dashboard-page', { state: { message: "User Login Successfully" } });
-            console.log(response.data.message);
         } catch (err) {
             const errorMessage = err.response?.data?.message || "Please Check Email or Password";
             toast.error(errorMessage);
-            console.log(err);
         } finally {
             setLoading(false);
         }
@@ -50,9 +48,7 @@ const Login = () => {
             <ToastContainer />
             <div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
                 <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
-                    <div>
-                        <h1 className="text-4xl font-extrabold text-center">Student Portal</h1>
-                    </div>
+                    <h1 className="text-4xl font-extrabold text-center">Student Portal</h1>
                     <form onSubmit={handleSubmit} method="POST">
                         <div className="mt-12 flex flex-col items-center">
                             <h1 className="text-2xl xl:text-3xl font-extrabold">Sign In</h1>
@@ -67,6 +63,7 @@ const Login = () => {
                                         type="email"
                                         placeholder="Email"
                                         required
+                                        aria-label="Email"
                                     />
                                     <input
                                         id="password"
@@ -77,6 +74,7 @@ const Login = () => {
                                         type="password"
                                         placeholder="Password"
                                         required
+                                        aria-label="Password"
                                     />
                                     <button
                                         type='submit'
@@ -85,11 +83,9 @@ const Login = () => {
                                     >
                                         {loading ? <span>Loading...</span> : <span>Log In</span>}
                                     </button>
-
                                     <Link to={'/sign-up'} className="mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
                                         <span className="ml-3">Sign Up</span>
                                     </Link>
-
                                     <p className="mt-6 text-xs text-gray-600 text-center">
                                         I agree to
                                         <a href="#" className="border-b border-gray-500 border-dotted"> Terms of Service </a>

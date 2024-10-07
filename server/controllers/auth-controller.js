@@ -1,54 +1,76 @@
 const expressAsyncHandler = require("express-async-handler");
 const UserModel = require("../models/user-model")
+const bcrypt = require('bcrypt');
 
 
-const loginController = expressAsyncHandler (async (req ,res) =>{
-    const {email, password} = req.body;
-    await UserModel.findOne({email: email})
-    const user = await UserModel.findOne({ email: email });
+const loginController = expressAsyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+
+    const user = await UserModel.findOne({ email });
     if (user) {
-        if (user.password === password) {
+        // Compare the hashed password with the provided password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (isMatch) {
             const token = user.generateAuthToken();
-            res.cookie('Token', token , {httpOnly: true})
+            res.cookie('Token', token, { httpOnly: true });
 
-
-            return res.status(200).json({message : "Login Successful", token} );
+            return res.status(200).json({
+                message: "Login Successful",
+                token,
+                id: user._id,
+                username: user.username
+            });
         } else {
             res.status(401);
             throw new Error("Wrong Password");
         }
     } else {
-        return res.status(400).json("No records found!");
+        return res.status(400).json({ message: "No records found!" });
     }
-
 });
 
-const registerController = expressAsyncHandler ( async (req , res)=>{
-    const {username , email , password , confirm_password} = req.body
+const registerController = expressAsyncHandler(async (req, res) => {
+    const { username, email, password, confirm_password } = req.body;
 
-    if (!username || !email || !password || !confirm_password){
+    // Validate required fields
+    if (!username || !email || !password || !confirm_password) {
         res.status(400);
-        throw new Error("All Fileds Are Required")
-
-    }else {
-        const userExist = await UserModel.findOne({ email });
-        if(userExist){
-            return  res.status(401).json({message : 'User Already Exist '})
-
-        }else{
-            if (password === confirm_password){
-                const CreateUser = await UserModel.create({
-                    username , email , password
-                })
-                return  res.status(201).json({message : 'User Register : '+email + 'and password is ' +password})
-
-            }else{
-                res.status(400);
-                throw new Error("Password And Confirm Password Does Not Match")
-            }
-        }
+        throw new Error("All fields are required");
     }
 
+    // Check if user already exists
+    const userExist = await UserModel.findOne({ email });
+    if (userExist) {
+        return res.status(401).json({ message: 'User already exists' });
+    }
+
+    // Check if passwords match
+    if (password !== confirm_password) {
+        res.status(400);
+        throw new Error("Password and confirm password do not match");
+    }
+
+    // Hash the password
+    const saltRounds = 10; // You can adjust this number
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Create new user
+    const createUser = await UserModel.create({
+        username,
+        email,
+        password: hashedPassword // Save the hashed password
+    });
+
+
+
+    return res.status(201).json({
+        message: `User registered: ${email}`
+    });
 });
+
+const createAttendence =expressAsyncHandler((req ,res)=>{
+
+})
+
 
 module.exports = {loginController , registerController }

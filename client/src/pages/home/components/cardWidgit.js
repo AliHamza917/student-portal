@@ -10,10 +10,10 @@ const CardWidgit = (props) => {
                 </h1>
                 <div className="flex justify-between space-x-4 text-center mt-6">
                     <div className="bg-indigo-50 rounded-xl p-10">
-                        <Link to={props.link || '404'}
+                        <button onClick={props.btnValue || '404'}
                             className="bg-green-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
                             {props.btnText || 'Button Text'}
-                        </Link>
+                        </button>
 
                     </div>
 
