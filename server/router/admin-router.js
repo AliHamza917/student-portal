@@ -4,7 +4,7 @@ const router = express.Router()
 // Controller
 
 
-router.route("/pending-attendence/:u_id").post(adminController.pen);
+router.route("/pending-attendence/:u_id").post(adminController.pendingAttendence);
 
 
 module.exports = router;

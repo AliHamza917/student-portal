@@ -18,7 +18,8 @@ const loginController = expressAsyncHandler(async (req, res) => {
                 message: "Login Successful",
                 token,
                 id: user._id,
-                username: user.username
+                username: user.username,
+                isAdmin :user.isAdmin
             });
         } else {
             res.status(401);

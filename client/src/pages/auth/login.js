@@ -23,10 +23,12 @@ const Login = () => {
             const response = await axios.post("http://localhost:8000/api/auth/login-user", inputs, {
                 headers: { 'Content-Type': 'application/json' }
             });
+
             toast.success("User Login Successfully");
             setCookie('Token', response.data.token, { path: '/' });
             setCookie('ID', response.data.id, { path: '/' });
             setCookie('Username', response.data.username, { path: '/' });
+            setCookie('Admin', response.data.isAdmin, { path: '/' });
             navigate('/dashboard-page', { state: { message: "User Login Successfully" } });
         } catch (err) {
             const errorMessage = err.response?.data?.message || "Please Check Email or Password";
