@@ -29,7 +29,6 @@ const getdataController = expressAsyncHandler(async (req, res) => {
             const status = todayAttendenceStatus.length > 0 ? todayAttendenceStatus[0].status : 'No status available';
 
             const countPending = await AttendenceModel.countDocuments({
-                u_id: userid,
                 status: 'Pending',
             })
             const countPresents = await AttendenceModel.countDocuments({
