@@ -96,7 +96,7 @@ const HomePage = () => {
             <main className="flex-grow bg-indigo-50 ml-0 md:ml-4 pr-6 p-4">
                 <div className="flex flex-col md:flex-row justify-between bg-white rounded-xl shadow-lg p-4">
                     <h1 className="text-xl font-bold text-gray-700">
-                        Welcome to Student Portal, {userdata.username}. I am {userdata.isAdmin ? 'Admin' : 'User'}
+                        Welcome to Student Portal , {userdata.username}
                     </h1>
                 </div>
 
